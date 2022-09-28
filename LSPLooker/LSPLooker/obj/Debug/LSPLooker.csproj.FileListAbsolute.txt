@@ -7,3 +7,5 @@ C:\Users\scYil\source\repos\LSPLooker\LSPLooker\obj\Debug\LSPLooker.csproj.CopyC
 C:\Users\scYil\source\repos\LSPLooker\LSPLooker\obj\Debug\LSPLooker.exe
 C:\Users\scYil\source\repos\LSPLooker\LSPLooker\obj\Debug\LSPLooker.pdb
 C:\Users\scYil\source\repos\LSPLooker\LSPLooker\obj\Debug\LSPLooker.csproj.AssemblyReference.cache
+C:\Users\scYil\source\repos\LSPLooker\LSPLooker\bin\Debug\Newtonsoft.Json.dll
+C:\Users\scYil\source\repos\LSPLooker\LSPLooker\bin\Debug\Newtonsoft.Json.xml

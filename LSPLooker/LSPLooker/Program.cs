@@ -1,8 +1,12 @@
 ﻿using HTTPServerLib;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -43,20 +47,10 @@ namespace LSPLooker
 
         public override void OnGet(HttpRequest request, HttpResponse response)
         {
-
-            ///链接形式1:"http://localhost:4050/assets/styles/style.css"表示访问指定文件资源，
-            ///此时读取服务器目录下的/assets/styles/style.css文件。
-
-            ///链接形式1:"http://localhost:4050/assets/styles/"表示访问指定页面资源，
-            ///此时读取服务器目录下的/assets/styles/style.index文件。
-
-            //当文件不存在时应返回404状态码
             string requestURL = request.URL;
             requestURL = requestURL.Replace("/", @"\").Replace("\\..", "").TrimStart('\\');
             string requestFile = Path.Combine(ServerRoot, requestURL); ;
-            //判断地址中是否存在扩展名
             string extension = Path.GetExtension(requestFile);
-            //根据有无扩展名按照两种不同链接进行处
             if (extension != "")
             {
                 //从文件中返回HTTP响应
@@ -86,15 +80,12 @@ namespace LSPLooker
             }
             else
             {
-                //如果是目录，返回index.html
                 if (Directory.Exists(requestFile))
                 {
-                    //加载静态HTML页面
                     response = response.FromText(direcget(requestFile, requestURL));
                     response.Content_Type = "text/html; charset=UTF-8";
                 }
             }
-            //发送HTTP响应
             response.Send();
         }
 
@@ -181,12 +172,44 @@ namespace LSPLooker
     }
     class Program
     {
+        static bool BUG = false;
         static void Main(string[] args)
         {
-            ExampleServer server = new ExampleServer("127.0.0.1", 8080);
-            server.SetRoot(@"E:\");
+            foreach (NetworkInterface netif in NetworkInterface.GetAllNetworkInterfaces()
+                .Where(a => a.SupportsMulticast)
+                .Where(a => a.OperationalStatus == OperationalStatus.Up)
+                .Where(a => a.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+                .Where(a => a.GetIPProperties().GetIPv4Properties() != null)
+                .Where(a => a.GetIPProperties().UnicastAddresses.Any(ua => ua.Address.AddressFamily == AddressFamily.InterNetwork))
+                .Where(a => a.GetIPProperties().UnicastAddresses.Any(ua => ua.IsDnsEligible))
+            )
+            {
+
+                Console.WriteLine("Network Interface: {0}", netif.Name);
+                IPInterfaceProperties properties = netif.GetIPProperties();
+                foreach (IPAddressInformation unicast in properties.UnicastAddresses)
+                    Console.WriteLine("\tUniCast: {0}", unicast.Address);
+            }
+            string ip = "127.0.0.1";
+            int port = 8080;
+            string RootDirectory = "C:\\"; 
+            using (System.IO.StreamReader file = System.IO.File.OpenText("config.json"))
+            {
+                using (JsonTextReader reader = new JsonTextReader(file))
+                {
+                    JObject o = (JObject)JToken.ReadFrom(reader);
+                    if(!(bool)o["service"]["Enable"])return;
+                    ip = (string)o["service"]["IPaddress"];
+                    port = (int)o["service"]["Port"];
+                    BUG = (bool)o["service"]["Debug"];
+                    RootDirectory = (string)o["service"]["RootDirectory"];
+                }
+            }
+            ExampleServer server = new ExampleServer(ip, port);
+            server.SetRoot(RootDirectory);
             server.Logger = new ConsoleLogger();
             server.Start();
+            return;
         }
     }
 }
