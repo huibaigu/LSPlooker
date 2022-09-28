@@ -6,3 +6,4 @@ C:\Users\scYil\source\repos\LSPLooker\LSPLooker\bin\Debug\HttpServerLib.dll
 C:\Users\scYil\source\repos\LSPLooker\LSPLooker\obj\Debug\LSPLooker.csproj.CopyComplete
 C:\Users\scYil\source\repos\LSPLooker\LSPLooker\obj\Debug\LSPLooker.exe
 C:\Users\scYil\source\repos\LSPLooker\LSPLooker\obj\Debug\LSPLooker.pdb
+C:\Users\scYil\source\repos\LSPLooker\LSPLooker\obj\Debug\LSPLooker.csproj.AssemblyReference.cache

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace LSPLooker
@@ -59,26 +60,26 @@ namespace LSPLooker
             if (extension != "")
             {
                 //从文件中返回HTTP响应
-                if (extension==".get")
+                if (extension == ".get")
                 {
-                    requestFile=requestFile.Replace(".get", "");
+                    requestFile = requestFile.Replace(".get", "");
                     extension = Path.GetExtension(requestFile);
-                    if (extension == ".mp4")
+                    if (extension == ".mp4"|| extension == ".avi")
                     {
-                        response = response.FromText(mp4get(requestFile));
+                        response = response.FromText(movieget(requestFile));
                         response.Content_Type = "text/html; charset=UTF-8";
                     }
-                    else if (extension == ".jpg")
+                    else if (extension == ".jpg" || extension == ".png" || extension == ".gif")
                     {
-                        response = response.FromText(jpgget(requestFile));
+                        response = response.FromText(picget(requestFile));
                         response.Content_Type = "text/html; charset=UTF-8";
                     }
                 }
-                else if (extension == ".mp4")
+                else if (extension == ".mp4" || extension == ".avi")
                 {
                     response = response.FromFile(requestFile);
                 }
-                else if (extension == ".jpg")
+                else if (extension == ".jpg" || extension == ".png" || extension == ".gif")
                 {
                     response = response.FromFile(requestFile);
                 }
@@ -128,21 +129,29 @@ namespace LSPLooker
 
             return html;
         }
-        private string mp4get(string requestFile)
+        private string movieget(string requestFile)
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append(string.Format("<!DOCTYPE html><html><head><meta charset=\"utf-8\"> <title>{0}</title></head><body><video width=\"320\" height=\"240\"  controls autoplay><source src=\"{0}\" type=\"video/mp4\"></video></body></html>", requestFile.Split('\\')[requestFile.Split('\\').Length-1]));
+            builder.Append(string.Format("<!DOCTYPE html><html><head><meta charset=\"utf-8\"> <title>{0}</title></head><body><video width=\"320\" height=\"240\"  controls autoplay><source src=\"{0}\" type=\"video/mp4\"><source src=\"{0}\" type=\"video/ogg\"><source src=\"{0}\" type=\"video/webm\"></video></body></html>", requestFile.Split('\\')[requestFile.Split('\\').Length-1]));
             return builder.ToString();
         }
-        private string jpgget(string requestFile)
+        private string picget(string requestFile)
         {
             StringBuilder builder = new StringBuilder();
             DirectoryInfo dd = new FileInfo(requestFile).Directory;
-            //builder.Append(string.Format("<!DOCTYPE html><html><head><meta charset=\"utf-8\"><title>{0}</title></head><body><video width=\"320\" height=\"240\" controls autoplay><source src=\"{1}\" type=\"video/mp4\"></video></body></html>", requestFile.Split('\\')[requestFile.Split('\\').Length - 2], requestFile.Replace("jpg", "getjpg")));
             builder.Append(string.Format("<!DOCTYPE html><html><head><meta charset=\"utf-8\"><title>{0}</title></head><body><h4>{1}</h4>", requestFile.Split('\\')[requestFile.Split('\\').Length - 2], requestFile.Split('\\')[requestFile.Split('\\').Length - 2]));
-            foreach (var aa in dd.GetFiles())
+            var getFile = dd.GetFiles();
+            try
             {
-                builder.Append(string.Format("<img src=\"{0}\" alt=\"ERROR\"><br>",aa.Name));
+                getFile = getFile.OrderBy(s => int.Parse(Regex.Match(s.Name, @"\d+").Value)).ToArray();
+            }
+            catch(Exception)
+            {
+                getFile = dd.GetFiles();
+            }
+            foreach (var aa in getFile)
+            {
+                builder.Append(string.Format("<img src=\"{0}\" alt=\"ERROR\" style=\"width:100%\"><br>",aa.Name));
             }
             builder.Append(string.Format("</body></html>"));
             return builder.ToString();
@@ -175,7 +184,7 @@ namespace LSPLooker
         static void Main(string[] args)
         {
             ExampleServer server = new ExampleServer("127.0.0.1", 8080);
-            server.SetRoot(@"D:\");
+            server.SetRoot(@"E:\");
             server.Logger = new ConsoleLogger();
             server.Start();
         }
