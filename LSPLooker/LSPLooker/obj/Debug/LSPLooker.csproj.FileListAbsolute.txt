@@ -2,10 +2,11 @@ C:\Users\scYil\source\repos\LSPLooker\LSPLooker\obj\Debug\LSPLooker.csproj.CoreC
 C:\Users\scYil\source\repos\LSPLooker\LSPLooker\bin\Debug\LSPLooker.exe.config
 C:\Users\scYil\source\repos\LSPLooker\LSPLooker\bin\Debug\LSPLooker.exe
 C:\Users\scYil\source\repos\LSPLooker\LSPLooker\bin\Debug\LSPLooker.pdb
-C:\Users\scYil\source\repos\LSPLooker\LSPLooker\bin\Debug\HttpServerLib.dll
 C:\Users\scYil\source\repos\LSPLooker\LSPLooker\obj\Debug\LSPLooker.csproj.CopyComplete
 C:\Users\scYil\source\repos\LSPLooker\LSPLooker\obj\Debug\LSPLooker.exe
 C:\Users\scYil\source\repos\LSPLooker\LSPLooker\obj\Debug\LSPLooker.pdb
 C:\Users\scYil\source\repos\LSPLooker\LSPLooker\obj\Debug\LSPLooker.csproj.AssemblyReference.cache
 C:\Users\scYil\source\repos\LSPLooker\LSPLooker\bin\Debug\Newtonsoft.Json.dll
 C:\Users\scYil\source\repos\LSPLooker\LSPLooker\bin\Debug\Newtonsoft.Json.xml
+C:\Users\scYil\source\repos\LSPLooker\LSPLooker\bin\Debug\HttpServerLib.pdb
+C:\Users\scYil\source\repos\LSPLooker\LSPLooker\bin\Debug\HttpServerLib.dll

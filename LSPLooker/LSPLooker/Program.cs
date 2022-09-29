@@ -71,11 +71,11 @@ namespace LSPLooker
                 }
                 else if (extension == ".mp4" || extension == ".avi")
                 {
-                    response = response.FromFile(requestFile);
+                    response.FromFile(request, requestFile);
                 }
                 else if (extension == ".jpg" || extension == ".png" || extension == ".gif")
                 {
-                    response = response.FromFile(requestFile);
+                    response.FromFile(request, requestFile);
                 }
             }
             else
@@ -87,6 +87,8 @@ namespace LSPLooker
                 }
             }
             response.Send();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
 
         public override void OnDefault(HttpRequest request, HttpResponse response)
@@ -101,7 +103,7 @@ namespace LSPLooker
             int length = ServerRoot.Length;
             foreach (var url in urls)
             {
-                var s = url.StartsWith("..") ? url : url.Substring(length).TrimEnd('\\');
+                var s = url.StartsWith("..") ? url : url.Substring(length).TrimEnd('\\').TrimStart('\\');
                 string requestFile = Path.Combine(ServerRoot, s.Replace("/", @"\").Replace("\\..", "").TrimStart('\\')); ;
                 if (pd==1)
                 {
@@ -123,7 +125,7 @@ namespace LSPLooker
         private string movieget(string requestFile)
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append(string.Format("<!DOCTYPE html><html><head><meta charset=\"utf-8\"> <title>{0}</title></head><body><video width=\"320\" height=\"240\"  controls autoplay><source src=\"{0}\" type=\"video/mp4\"><source src=\"{0}\" type=\"video/ogg\"><source src=\"{0}\" type=\"video/webm\"></video></body></html>", requestFile.Split('\\')[requestFile.Split('\\').Length-1]));
+            builder.Append(string.Format("<!DOCTYPE html><html><head><meta charset=\"utf-8\"> <title>{0}</title></head><body><video width=\"320\" height=\"240\"  controls><source src=\"{0}\" type=\"video/mp4\"><source src=\"{0}\" type=\"video/ogg\"><source src=\"{0}\" type=\"video/webm\"></video></body></html>", requestFile.Split('\\')[requestFile.Split('\\').Length-1]));
             return builder.ToString();
         }
         private string picget(string requestFile)
